@@ -5,6 +5,7 @@ import InputFile from './Components/InputFile';
 import InputRadio from './Components/InputRadio';
 import InputRange from './Components/InputRange';
 import InputDate from './Components/InputDate';
+import InputOption from './Components/InputOption';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
    <InputRadio/>
    <InputRange/>
    <InputDate/>
+   <InputOption/>
    </div>
   );
 }
