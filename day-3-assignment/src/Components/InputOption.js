@@ -2,10 +2,10 @@ export default function InputOptions(props){
     return(
     <>  
     <select name="cars" id="cars">
-        <option value="Option1">Option1</option>
-        <option value="Option2">Option2</option>
-        <option value="Option3">Option3</option>
-        <option value="Option4">Option4</option>
+        <option value={props.value1}>{props.option1}</option>
+        <option value={props.value2}>{props.option1}</option>
+        <option value={props.value3}>{props.option1}</option>
+        <option value={props.value4}>{props.option1}</option>
     </select>
     </>  
     );
