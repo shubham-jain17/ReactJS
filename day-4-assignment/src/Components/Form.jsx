@@ -7,12 +7,8 @@ import Error from './Error';
 import { useState } from 'react';
 
 export default function Form() {
-    let isValidName = true;
-    let isValidEmail = true;
-    let isValidPassword = true;
-    let isPasswordMatched = true;
 
-    const emailRegex = /^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i;
+
     const [errorlist, setErrorList] = useState([]);
 
     const [formdata, setFormData] = useState({
@@ -30,12 +26,13 @@ export default function Form() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        let err = [];
+        const err = [];
+        const emailRegex = /^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i;
 
-        isValidEmail = emailRegex.test(formdata.email);
-        isValidName = formdata.name.length > 0 ? true : false;
-        isValidPassword = formdata.password.length > 5 ? true : false;
-        isPasswordMatched = formdata.password === formdata.confirmPassword ? true : false
+        const isValidEmail = emailRegex.test(formdata.email);
+        const isValidName = formdata.name.length > 0 ? true : false;
+        const isValidPassword = formdata.password.length > 5 ? true : false;
+        const isPasswordMatched = formdata.password === formdata.confirmPassword ? true : false
 
         if (!isValidEmail) {
             //console.log("Invalid Email")
