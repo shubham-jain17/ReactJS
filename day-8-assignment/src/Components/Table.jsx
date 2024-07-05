@@ -1,7 +1,10 @@
-export default function Table(props) {
+import { useSelector } from 'react-redux'
 
-    if (props.productList.length > 0) {
-        const rows = props.productList.map((p, i) => {
+export default function Table(props) {
+    const totalItem = useSelector((state) => state.form.formItems);
+
+    if (totalItem.length > 0) {
+        const rows = totalItem.map((p, i) => {
             return (<tr key={i}>
                 <td>{p.Id}</td>
                 <td>{p.name}</td>
