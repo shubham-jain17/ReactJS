@@ -1,7 +1,7 @@
 import Chart from 'react-apexcharts'
 import GetOHCLdata from '../Api/OHLCService';
 import { useEffect, useState } from 'react';
-
+import bitfinex from '../Images/bifinex.png';
 
 
 export default function CandleStickChart() {
@@ -16,7 +16,7 @@ export default function CandleStickChart() {
 
     const [candleData, setCandleData] = useState([]);
     const [shouldfetch, setShouldFetch] = useState(true);
-    const [timeFrame, setTimeFrame] = useState('1h');
+    const [timeFrame, setTimeFrame] = useState('1m');
     const [startTime, setStartTime] = useState(todaysTimestamp);
     const [limit, setLimit] = useState('100');
 
@@ -28,7 +28,6 @@ export default function CandleStickChart() {
         const currentDate = new Date();
         switch (e.target.id) {
             case '3y':
-
                 // Subtract three years from the current date
                 const threeYearsAgo = new Date();
                 threeYearsAgo.setFullYear(currentDate.getFullYear() - 3);
@@ -38,6 +37,18 @@ export default function CandleStickChart() {
                 setStartTime(threeYearsAgoTimestamp);
                 setTimeFrame('1D');
                 setLimit('1000');
+                break;
+            case '1y':
+
+                // Subtract three years from the current date
+                const oneYearsAgo = new Date();
+                oneYearsAgo.setFullYear(currentDate.getFullYear() - 1);
+
+                // Get the timestamp (in milliseconds since the Unix epoch) for the date three years ago
+                const oneYearsAgoTimestamp = oneYearsAgo.getTime().toString();
+                setStartTime(oneYearsAgoTimestamp);
+                setTimeFrame('1D');
+                setLimit('500');
                 break;
             case '3m':
 
@@ -52,6 +63,54 @@ export default function CandleStickChart() {
                 setStartTime(threeMonthsAgoTimestamp);
                 setLimit('100');
                 break;
+            case '1m':
+
+                // Subtract three years from the current date
+                const oneMonthsAgo = new Date();
+                oneMonthsAgo.setFullYear(currentDate.getMonth() - 1);
+
+                // Get the timestamp (in milliseconds since the Unix epoch) for the date three Months ago
+                const oneMonthsAgoTimestamp = oneMonthsAgo.getTime().toString();
+                setStartTime(oneMonthsAgoTimestamp);
+                setTimeFrame('1h');
+                setLimit('200');
+                break;
+            case '7d':
+
+                // Subtract three years from the current date
+                const sevenDaysAgo = new Date();
+                sevenDaysAgo.setFullYear(currentDate.getDate() - 7);
+
+                // Get the timestamp (in milliseconds since the Unix epoch) for the date three Months ago
+                const sevenDaysAgoTimestamp = sevenDaysAgo.getTime().toString();
+                setStartTime(sevenDaysAgoTimestamp);
+                setTimeFrame('1h');
+                setLimit('180');
+                break;
+            case '1d':
+
+                // Subtract three years from the current date
+                const oneDaysAgo = new Date();
+                oneDaysAgo.setFullYear(currentDate.getDate() - 1);
+
+                // Get the timestamp (in milliseconds since the Unix epoch) for the date three Months ago
+                const oneDaysAgoTimestamp = oneDaysAgo.getTime().toString();
+                setStartTime(oneDaysAgoTimestamp);
+                setTimeFrame('1h');
+                setLimit('50');
+                break;
+            case '1h':
+
+                // Subtract three years from the current date
+                const oneHoursAgo = new Date();
+                oneHoursAgo.setFullYear(currentDate.getHours() - 1);
+
+                // Get the timestamp (in milliseconds since the Unix epoch) for the date three Months ago
+                const oneHoursAgoTimestamp = oneHoursAgo.getTime().toString();
+                setStartTime(oneHoursAgoTimestamp);
+                setTimeFrame('1m');
+                setLimit('50');
+                break;
 
             default:
                 break;
@@ -65,22 +124,80 @@ export default function CandleStickChart() {
     }]
 
     const options = {
+
+        plotOptions: {
+            candlestick: {
+                colors: {
+                    upward: '#01a781',
+                    downward: '#e44b44'
+                },
+                wick: {
+                    useFillColor: true
+                }
+            }
+        },
+
         chart: {
+
             type: 'candlestick',
-            height: 350
+            height: 350,
+            background: '#172d3e',
+
+            toolbar: {
+                show: false,
+            },
+
+            events: {
+
+                mouseMove: (event, chartContext, config) => {
+
+                    //console.log(config);
+
+                    //debugger;
+                    if (config.seriesIndex != -1) {
+                        console.log(config.config.series[config.seriesIndex].data[config.dataPointIndex].y);
+                    }
+
+
+                }
+            }
         },
         title: {
-            text: 'CandleStickChart',
-            align: 'left'
+            align: 'left',
+            style: {
+                fontSize: '24px',
+                fontWeight: 'bold',
+                fontFamily: undefined,
+                color: '#fff'
+            }
         },
         xaxis: {
-            type: 'datetime'
+            type: 'datetime',
+            labels: {
+                datetimeUTC: false,
+                style: {
+                    colors: '#74818b',
+                    fontSize: '12px',
+                    cssClass: 'apexcharts-xaxis-label',
+                }
+            },
+
         },
         yaxis: {
             opposite: true,
             tooltip: {
                 enabled: true,
 
+            },
+            labels: {
+                style: {
+                    colors: '#74818b',
+                    fontSize: '12px',
+                    cssClass: 'apexcharts-yaxis-label',
+                },
+                formatter: function (val, index) {
+                    return val.toFixed(0);
+                }
             }
         }
     }
@@ -113,21 +230,24 @@ export default function CandleStickChart() {
 
 
     return (
-        <>
+        <div className='Chartblock'>
+            <img src={bitfinex}></img>
+            <p>Open </p>
+
             <Chart
                 options={options}
                 series={series}
                 type="candlestick"
                 width="800"
             />
-            <button onClick={handleClick} id='3y'>3y</button>
-            <button onClick={handleClick} id='1y'>1y</button>
-            <button onClick={handleClick} id='3m'>3m</button>
-            <button onClick={handleClick} id='1m'>1m</button>
-            <button onClick={handleClick} id='7d'>7d</button>
-            <button onClick={handleClick} id='1d'>1d</button>
-            <button onClick={handleClick} id='1h'>1h</button>
-        </>
+            <button className='custom-button' onClick={handleClick} id='3y'>3y</button>
+            <button className='custom-button' onClick={handleClick} id='1y'>1y</button>
+            <button className='custom-button' onClick={handleClick} id='3m'>3m</button>
+            <button className='custom-button' onClick={handleClick} id='1m'>1m</button>
+            <button className='custom-button' onClick={handleClick} id='7d'>7d</button>
+            <button className='custom-button' onClick={handleClick} id='1d'>1d</button>
+            <button className='custom-button' onClick={handleClick} id='1h'>1h</button>
+        </div>
     );
 }
 

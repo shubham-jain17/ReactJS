@@ -6,8 +6,8 @@ async function GetOHCLdata(timeFrame = '1h', startTime, limit = '100') {
         const data = await response.json();
         return data; // Return the fetched data
     } catch (err) {
-        //console.error(err);
-        throw err; // Re-throw the error to be handled by the caller
+        console.error(err);
+        //throw err; // Re-throw the error to be handled by the caller
     }
 }
 
