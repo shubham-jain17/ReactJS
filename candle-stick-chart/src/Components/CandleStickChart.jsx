@@ -1,130 +1,95 @@
 import Chart from 'react-apexcharts'
-import GetOHCLdata from '../Api/OHLCService';
+import GetOHCLdata from '../Services/OHLCService';
 import { useEffect, useState } from 'react';
 import bitfinex from '../Images/bifinex.png';
-
+import OHCLLabel from './OHCLLabel';
 
 export default function CandleStickChart() {
-
+    //#region States and variables 
     const now = new Date();
-
-    // Set the time to midnight (00:00:00)
     now.setHours(0, 0, 0, 0);
-
-    // Get the timestamp for today's date at midnight
     const todaysTimestamp = now.getTime().toString();
-
     const [candleData, setCandleData] = useState([]);
     const [shouldfetch, setShouldFetch] = useState(true);
     const [timeFrame, setTimeFrame] = useState('1m');
     const [startTime, setStartTime] = useState(todaysTimestamp);
     const [limit, setLimit] = useState('100');
+    const [hoverData, setHoverData] = useState([]);
+    //#endregion
 
-
+    //#region Event Handler
     const handleClick = (e) => {
-
         setShouldFetch(true);
-
         const currentDate = new Date();
         switch (e.target.id) {
             case '3y':
-                // Subtract three years from the current date
                 const threeYearsAgo = new Date();
                 threeYearsAgo.setFullYear(currentDate.getFullYear() - 3);
-
-                // Get the timestamp (in milliseconds since the Unix epoch) for the date three years ago
                 const threeYearsAgoTimestamp = threeYearsAgo.getTime().toString();
                 setStartTime(threeYearsAgoTimestamp);
                 setTimeFrame('1D');
                 setLimit('1000');
                 break;
             case '1y':
-
-                // Subtract three years from the current date
                 const oneYearsAgo = new Date();
                 oneYearsAgo.setFullYear(currentDate.getFullYear() - 1);
-
-                // Get the timestamp (in milliseconds since the Unix epoch) for the date three years ago
                 const oneYearsAgoTimestamp = oneYearsAgo.getTime().toString();
                 setStartTime(oneYearsAgoTimestamp);
                 setTimeFrame('1D');
                 setLimit('500');
                 break;
             case '3m':
-
-
-                // Subtract three years from the current date
                 const threeMonthsAgo = new Date();
                 threeMonthsAgo.setFullYear(currentDate.getMonth - 3);
-
-                // Get the timestamp (in milliseconds since the Unix epoch) for the date three years ago
                 const threeMonthsAgoTimestamp = threeMonthsAgo.getTime().toString();
                 setTimeFrame('1D');
                 setStartTime(threeMonthsAgoTimestamp);
                 setLimit('100');
                 break;
             case '1m':
-
-                // Subtract three years from the current date
                 const oneMonthsAgo = new Date();
                 oneMonthsAgo.setFullYear(currentDate.getMonth() - 1);
-
-                // Get the timestamp (in milliseconds since the Unix epoch) for the date three Months ago
                 const oneMonthsAgoTimestamp = oneMonthsAgo.getTime().toString();
                 setStartTime(oneMonthsAgoTimestamp);
                 setTimeFrame('1h');
                 setLimit('200');
                 break;
             case '7d':
-
-                // Subtract three years from the current date
                 const sevenDaysAgo = new Date();
                 sevenDaysAgo.setFullYear(currentDate.getDate() - 7);
-
-                // Get the timestamp (in milliseconds since the Unix epoch) for the date three Months ago
                 const sevenDaysAgoTimestamp = sevenDaysAgo.getTime().toString();
                 setStartTime(sevenDaysAgoTimestamp);
                 setTimeFrame('1h');
                 setLimit('180');
                 break;
             case '1d':
-
-                // Subtract three years from the current date
                 const oneDaysAgo = new Date();
                 oneDaysAgo.setFullYear(currentDate.getDate() - 1);
-
-                // Get the timestamp (in milliseconds since the Unix epoch) for the date three Months ago
                 const oneDaysAgoTimestamp = oneDaysAgo.getTime().toString();
                 setStartTime(oneDaysAgoTimestamp);
                 setTimeFrame('1h');
                 setLimit('50');
                 break;
             case '1h':
-
-                // Subtract three years from the current date
                 const oneHoursAgo = new Date();
                 oneHoursAgo.setFullYear(currentDate.getHours() - 1);
-
-                // Get the timestamp (in milliseconds since the Unix epoch) for the date three Months ago
                 const oneHoursAgoTimestamp = oneHoursAgo.getTime().toString();
                 setStartTime(oneHoursAgoTimestamp);
                 setTimeFrame('1m');
                 setLimit('50');
                 break;
-
             default:
                 break;
         }
-
     }
+    //#endregion
 
+    //#region Apex Chart Configuratio
     const series = [{
         data: [...candleData]
-
     }]
 
     const options = {
-
         plotOptions: {
             candlestick: {
                 colors: {
@@ -138,27 +103,20 @@ export default function CandleStickChart() {
         },
 
         chart: {
-
             type: 'candlestick',
             height: 350,
             background: '#172d3e',
-
             toolbar: {
                 show: false,
             },
-
             events: {
-
                 mouseMove: (event, chartContext, config) => {
-
-                    //console.log(config);
-
-                    //debugger;
-                    if (config.seriesIndex != -1) {
+                    if (config.seriesIndex !== -1) {
                         console.log(config.config.series[config.seriesIndex].data[config.dataPointIndex].y);
+
+                        setHoverData(config.config.series[config.seriesIndex].data[config.dataPointIndex].y);
+
                     }
-
-
                 }
             }
         },
@@ -187,7 +145,6 @@ export default function CandleStickChart() {
             opposite: true,
             tooltip: {
                 enabled: true,
-
             },
             labels: {
                 style: {
@@ -201,10 +158,9 @@ export default function CandleStickChart() {
             }
         }
     }
+    //#endregion
 
-
-
-
+    //#region UseEffect hook for api calling
     useEffect(() => {
         const fetchData = async () => {
             const data = await GetOHCLdata(timeFrame, startTime, limit);
@@ -222,18 +178,14 @@ export default function CandleStickChart() {
         if (shouldfetch) {
             fetchData();
         }
-
-
     }, [shouldfetch, timeFrame, startTime, limit])
+    //#endregion
 
-
-
-
+    //#region  JSX Code
     return (
         <div className='Chartblock'>
             <img src={bitfinex}></img>
-            <p>Open </p>
-
+            <OHCLLabel data={hoverData}></OHCLLabel>
             <Chart
                 options={options}
                 series={series}
@@ -249,6 +201,7 @@ export default function CandleStickChart() {
             <button className='custom-button' onClick={handleClick} id='1h'>1h</button>
         </div>
     );
+    //#endregion
 }
 
 

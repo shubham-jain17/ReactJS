@@ -1,9 +1,22 @@
-.App {
-  
+.OHCLData{
+  color:#74818b ;
+  display: flex;
+  gap: 5px;
+}
+
+.green{
+  color:#01a781 ;
+}
+
+.red{
+  color: #e44b44;
 }
 
 .Chartblock{
   background-color:#172d3e;
+  padding-left: 15%;
+  padding-top: 5%;
+  padding-bottom: 2%;
 }
 
 .custom-button {
